@@ -1,11 +1,16 @@
 //=========================================
-// Google Sheets
+// Google Sheets API
 //=========================================
 
 const API_URL = "https://script.google.com/macros/s/AKfycbxER_YDEHcxYH8kHCzKS-Tap3EXFzPx3a_Qx33JfHvxsGP1mVfqYr_VDq3RJreB8gWc/exec";
 
+//=========================================
+// البيانات
+//=========================================
+
 let students = [];
 let attendance = [];
+let currentStudent = null;
 
 //=========================================
 // عناصر الصفحة
@@ -14,12 +19,50 @@ let attendance = [];
 const phoneInput = document.getElementById("phoneInput");
 
 const searchBtn = document.getElementById("searchBtn");
-const attendanceBtn = document.getElementById("attendanceBtn");
 
 const result = document.getElementById("result");
+
+const attendanceResult = document.getElementById("attendanceResult");
+
 const notFound = document.getElementById("notFound");
 
 const container = document.querySelector(".container");
+
+const showAttendanceBtn = document.getElementById("showAttendanceBtn");
+
+const backToStudentBtn = document.getElementById("backToStudentBtn");
+
+//=========================================
+// إخفاء زر الحضور عند بداية التشغيل
+//=========================================
+
+showAttendanceBtn.style.display = "none";
+
+//=========================================
+// Events
+//=========================================
+
+searchBtn.addEventListener("click", searchStudent);
+
+showAttendanceBtn.addEventListener("click", showAttendance);
+
+backToStudentBtn.addEventListener("click", function () {
+
+    attendanceResult.classList.add("hidden");
+
+    result.classList.remove("hidden");
+
+});
+
+phoneInput.addEventListener("keypress", function (e) {
+
+    if (e.key === "Enter") {
+
+        searchStudent();
+
+    }
+
+});
 //=========================================
 // تحميل البيانات
 //=========================================
@@ -29,56 +72,43 @@ async function loadStudents(){
     try{
 
         searchBtn.disabled = true;
-        attendanceBtn.disabled = true;
 
         searchBtn.innerHTML = "جارى تحميل البيانات...";
-        attendanceBtn.innerHTML = "جارى تحميل البيانات...";
 
         const response = await fetch(API_URL);
 
         const data = await response.json();
 
-        students = data.students;
-        attendance = data.attendance;
+        students = data.students || [];
 
-        console.log(students);
-        console.log(attendance);
+        attendance = data.attendance || [];
 
         searchBtn.disabled = false;
-        attendanceBtn.disabled = false;
 
-        searchBtn.innerHTML = "استعلام";
-        attendanceBtn.innerHTML = "استعلام الحضور";
+        searchBtn.innerHTML = `
+            <i class="fa-solid fa-magnifying-glass"></i>
+            استعلام
+        `;
+
+        console.log("Students :", students.length);
+
+        console.log("Attendance :", attendance.length);
 
     }
 
     catch(error){
 
-        console.log(error);
+        console.error(error);
 
-        alert("تعذر تحميل البيانات");
+        alert("تعذر تحميل البيانات من Google Sheets");
 
     }
 
 }
 
 loadStudents();
-//=========================================
-// Events
-//=========================================
 
-searchBtn.addEventListener("click",searchStudent);
-attendanceBtn.addEventListener("click",searchAttendance);
 
-phoneInput.addEventListener("keypress",function(e){
-
-    if(e.key==="Enter"){
-
-        searchStudent();
-
-    }
-
-});
 //=========================================
 // تنظيف رقم الهاتف
 //=========================================
@@ -87,54 +117,48 @@ function cleanPhone(phone){
 
     return String(phone)
 
-    .replace(/[^\d]/g,"")
+        .replace(/[^\d]/g,"")
 
-    .replace(/^0+/,"");
+        .replace(/^0+/,"");
 
 }
+
+
 //=========================================
 // عرض بيانات الطالب
 //=========================================
 
 function displayStudent(student){
 
+    currentStudent = student;
+
+    attendanceResult.classList.add("hidden");
+
     result.classList.remove("hidden");
+
     notFound.classList.add("hidden");
 
-    let list=document.getElementById("studentList");
+    showAttendanceBtn.style.display = "inline-flex";
 
-    if(list){
+    document.getElementById("studentCode").textContent = student.code;
+document.getElementById("studentName").textContent = student.name;
+document.getElementById("studentGrade").textContent = student.grade;
+document.getElementById("studentGroup").textContent = student.group;
+document.getElementById("studentStart").textContent = student.start;
+document.getElementById("studentTime").textContent = student.time;
+document.getElementById("studentWhatsapp").textContent = student.studentWhatsapp;
+document.getElementById("parentWhatsapp").textContent = student.parentWhatsapp;
 
-        list.remove();
-
-    }
-
-    document.getElementById("studentCode").textContent=student.code;
-    document.getElementById("studentName").textContent=student.name;
-    document.getElementById("studentGrade").textContent=student.grade;
-    document.getElementById("studentGroup").textContent=student.group;
-    document.getElementById("studentStart").textContent=student.start;
-    document.getElementById("studentTime").textContent=student.time;
-    document.getElementById("studentWhatsapp").textContent=student.studentWhatsapp;
-    document.getElementById("parentWhatsapp").textContent=student.parentWhatsapp;
-//=========================================
-// عرض الطلاب الآخرين بنفس رقم الواتساب
-//=========================================
-
-showOtherStudents(student);
+    showOtherStudents(student);
 
 }
 //=========================================
-// فتح بيانات الطالب
-//=========================================
-//=========================================
-// عرض الطلاب الآخرين
+// عرض الطلاب المرتبطين بنفس الرقم
 //=========================================
 
-function showOtherStudents(currentStudent){
+function showOtherStudents(student){
 
-    // حذف القائمة القديمة إن وجدت
-    let old=document.getElementById("otherStudents");
+    const old=document.getElementById("otherStudents");
 
     if(old){
 
@@ -142,102 +166,69 @@ function showOtherStudents(currentStudent){
 
     }
 
-    // البحث عن الطلاب المرتبطين بنفس الرقم
-    const others=students.filter(student=>
+    const sameStudents=students.filter(item=>
 
-        (
+        cleanPhone(item.parentWhatsapp)===cleanPhone(student.parentWhatsapp)
 
-            cleanPhone(student.studentWhatsapp)===cleanPhone(currentStudent.studentWhatsapp)
-
-            ||
-
-            cleanPhone(student.parentWhatsapp)===cleanPhone(currentStudent.parentWhatsapp)
-
-        )
-
-        &&
-
-        String(student.code)!==String(currentStudent.code)
+        && item.code!==student.code
 
     );
 
-    // إذا لم يوجد طلاب آخرون
-    if(others.length===0){
+    if(sameStudents.length===0){
 
         return;
 
     }
 
-    let html=`
+    const card=document.createElement("div");
 
-    <div id="otherStudents" class="student-list">
+    card.className="result-card";
 
-        <div class="student-header">
+    card.id="otherStudents";
 
-            <h2>
+    card.innerHTML=`
 
-                👨‍👩‍👧‍👦 طلاب آخرون
+        <h2 class="result-title">
 
-            </h2>
+            <i class="fa-solid fa-users"></i>
 
-        </div>
+            طلاب آخرون لنفس ولي الأمر
+
+        </h2>
 
     `;
 
-    others.forEach(student=>{
+    sameStudents.forEach(item=>{
 
-        html+=`
+        const btn=document.createElement("button");
 
-        <div class="student-card-new">
+        btn.className="search-btn";
 
-            <div class="student-name">
+        btn.style.marginTop="10px";
 
-                ${student.name}
+        btn.style.width="100%";
 
-            </div>
+        btn.innerHTML=`${item.name}`;
 
-            <button
+        btn.onclick=()=>displayStudent(item);
 
-                class="student-open-btn"
-
-                onclick="displayStudentByCode('${student.code}')">
-
-                عرض البيانات
-
-            </button>
-
-        </div>
-
-        `;
+        card.appendChild(btn);
 
     });
 
-    html+=`</div>`;
-
-    result.insertAdjacentHTML("afterend",html);
+    result.after(card);
 
 }
-function displayStudentByCode(code){
 
-    const student=students.find(s=>String(s.code)===String(code));
 
-    if(student){
 
-        displayStudent(student);
-
-    }
-
-}
 //=========================================
-// عرض قائمة الطلاب
+// عرض قائمة الطلاب عند تطابق الرقم
 //=========================================
 
 function showStudentList(list){
 
-    result.classList.add("hidden");
-    notFound.classList.add("hidden");
-
-    let old=document.getElementById("studentList");
+    const old=document.getElementById("studentList");
 
     if(old){
 
@@ -245,65 +236,49 @@ function showStudentList(list){
 
     }
 
-    let html=`
+    const card=document.createElement("div");
 
-    <div id="studentList" class="student-list">
+    card.className="result-card";
 
-        <div class="student-header">
+    card.id="studentList";
 
-            <div class="student-header-icon">
+    card.innerHTML=`
 
-                <i class="fa-solid fa-users"></i>
+        <h2 class="result-title">
 
-            </div>
+            <i class="fa-solid fa-list"></i>
 
-            <h2>
+            اختر الطالب
 
-                تم العثور على ${list.length} طالب
-
-            </h2>
-
-            <p>
-
-                اختر الطالب المطلوب
-
-            </p>
-
-        </div>
+        </h2>
 
     `;
 
     list.forEach(student=>{
 
-        html+=`
+        const btn=document.createElement("button");
 
-        <div class="student-card-new">
+        btn.className="search-btn";
 
-            <div class="student-name">
+        btn.style.marginTop="10px";
 
-                ${student.name}
+        btn.style.width="100%";
 
-            </div>
+        btn.innerHTML=student.name;
 
-            <button
+        btn.onclick=function(){
 
-                class="student-open-btn"
+            card.remove();
 
-                onclick="displayStudentByCode('${student.code}')">
+            displayStudent(student);
 
-                عرض البيانات
+        };
 
-            </button>
-
-        </div>
-
-        `;
+        card.appendChild(btn);
 
     });
 
-    html+=`</div>`;
-
-    container.insertAdjacentHTML("beforeend",html);
+    result.after(card);
 
 }
 //=========================================
@@ -314,7 +289,6 @@ function searchStudent(){
 
     const phone = cleanPhone(phoneInput.value);
 
-    // التحقق من إدخال رقم
     if(phone===""){
 
         alert("برجاء إدخال رقم الواتساب");
@@ -325,73 +299,163 @@ function searchStudent(){
 
     }
 
-    // حذف القائمة القديمة
-    let old=document.getElementById("studentList");
+    // إخفاء جميع النتائج السابقة
 
-    if(old){
+    result.classList.add("hidden");
 
-        old.remove();
+    attendanceResult.classList.add("hidden");
+
+    notFound.classList.add("hidden");
+
+    showAttendanceBtn.style.display="none";
+
+    const old1=document.getElementById("studentList");
+    if(old1) old1.remove();
+
+    const old2=document.getElementById("otherStudents");
+    if(old2) old2.remove();
+
+    // البحث
+
+    const foundStudents=students.filter(student=>{
+
+        return cleanPhone(student.studentWhatsapp)===phone ||
+
+               cleanPhone(student.parentWhatsapp)===phone;
+
+    });
+
+    if(foundStudents.length===0){
+
+        notFound.classList.remove("hidden");
+
+        return;
 
     }
 
-    // إخفاء النتائج السابقة
-    result.classList.add("hidden");
-    notFound.classList.add("hidden");
+    if(foundStudents.length===1){
 
-    // البحث عن جميع الطلاب
-    const matchedStudents = students.filter(student =>
+        displayStudent(foundStudents[0]);
 
-        cleanPhone(student.studentWhatsapp)===phone ||
+        return;
 
-        cleanPhone(student.parentWhatsapp)===phone
+    }
+
+    showStudentList(foundStudents);
+
+}
+//=========================================
+// عرض سجل الحضور
+//=========================================
+
+function showAttendance(){
+
+    if(!currentStudent){
+
+        return;
+
+    }
+
+    const phone=cleanPhone(currentStudent.studentWhatsapp);
+
+    const record=attendance.find(item=>
+
+        cleanPhone(item.WhatsApp)===phone
 
     );
 
-    // لا يوجد طالب
-    if(matchedStudents.length===0){
+    if(!record){
 
-    notFound.classList.remove("hidden");
-
-    phoneInput.value = "";
-
-    return;
-
-}
-    // طالب واحد
-    if(matchedStudents.length===1){
-
-    displayStudent(matchedStudents[0]);
-
-    phoneInput.value = "";
-
-    return;
-
-}
-
-    // أكثر من طالب
-    showStudentList(matchedStudents);
-
-phoneInput.value = "";
-
-}
-//=========================================
-// استعلام الحضور
-//=========================================
-
-function searchAttendance(){
-
-    const phone = cleanPhone(phoneInput.value);
-
-    if(phone===""){
-
-        alert("برجاء إدخال رقم الواتساب");
-
-        phoneInput.focus();
+        alert("لا توجد بيانات حضور لهذا الطالب");
 
         return;
 
     }
 
-    alert("سيتم ربط بيانات الحضور مع Google Sheets في الخطوة القادمة.");
+    result.classList.add("hidden");
+
+    attendanceResult.classList.remove("hidden");
+
+    document.getElementById("attendanceName").textContent=record.StudentName;
+
+    document.getElementById("attendanceCount").textContent=record.Attendance;
+
+    document.getElementById("absenceCount").textContent=record.Absence;
+
+    document.getElementById("lastAttendance").textContent=record.LastAttendance;
+
+    document.getElementById("attendanceRate").textContent=record.Rate;
 
 }
+//=========================================
+// الرجوع لبيانات الطالب
+//=========================================
+
+backToStudentBtn.addEventListener("click",function(){
+
+    attendanceResult.classList.add("hidden");
+
+    result.classList.remove("hidden");
+
+});
+
+
+//=========================================
+// الضغط على Enter
+//=========================================
+
+phoneInput.addEventListener("keydown",function(e){
+
+    if(e.key==="Enter"){
+
+        searchStudent();
+
+    }
+
+});
+
+
+//=========================================
+// منع المسافات فى أول الإدخال
+//=========================================
+
+phoneInput.addEventListener("input",function(){
+
+    this.value=this.value.trimStart();
+
+});
+
+
+//=========================================
+// تنظيف الشاشة عند تغيير رقم الهاتف
+//=========================================
+
+phoneInput.addEventListener("input",function(){
+
+    result.classList.add("hidden");
+
+    attendanceResult.classList.add("hidden");
+
+    notFound.classList.add("hidden");
+
+    showAttendanceBtn.style.display="none";
+
+    currentStudent=null;
+
+    const studentList=document.getElementById("studentList");
+
+    if(studentList){
+
+        studentList.remove();
+
+    }
+
+    const otherStudents=document.getElementById("otherStudents");
+
+    if(otherStudents){
+
+        otherStudents.remove();
+
+    }
+
+});

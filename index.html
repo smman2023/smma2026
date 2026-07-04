@@ -2,15 +2,19 @@
 <html lang="ar" dir="rtl">
 
 <head>
+
     <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>أكاديمية مستر السمان | بوابة الاستعلام</title>
 
     <meta name="description" content="بوابة الاستعلام الإلكترونية لأكاديمية السمان">
+
     <meta name="theme-color" content="#0d47a1">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
+
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -19,6 +23,7 @@
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 
     <link rel="stylesheet" href="style.css">
+
 </head>
 
 <body>
@@ -26,214 +31,251 @@
 <div class="container">
 
     <!-- الشعار -->
+
     <img src="logo.png" class="logo" alt="أكاديمية مستر السمان">
 
     <!-- العنوان -->
+
     <h1 class="main-title">
+
         أكاديمية مستر السمان
+
     </h1>
 
     <p class="sub-title">
+
         بوابة الاستعلام الإلكترونية
+
     </p>
 
-    <!-- الخط الذهبي -->
     <div class="title-line"></div>
 
     <!-- البانر -->
+
     <div class="banner">
+
         <img src="banner.png" alt="بانر أكاديمية السمان">
+
     </div>
 
-    <!-- مربع البحث -->
+    <!-- البحث -->
+
     <div class="search-box">
 
         <input
+
             type="tel"
+
             id="phoneInput"
+
             placeholder="رقم واتساب الطالب أو ولي الأمر"
+
             autocomplete="off">
 
         <button id="searchBtn" class="search-btn">
+
             <i class="fa-solid fa-magnifying-glass"></i>
+
             استعلام
+
         </button>
-<button id="attendanceBtn" class="search-btn attendance-btn">
-    <i class="fa-solid fa-calendar-check"></i>
-    استعلام الحضور
-</button>
 
     </div>
+<!-- بيانات الطالب -->
 
-    <!-- بيانات الطالب -->
-
-    <div id="result" class="result-card hidden">
-
-        <h2 class="result-title">
-            <i class="fa-solid fa-user-graduate"></i>
-            بيانات الطالب
-        </h2>
-
-        <div class="result-row">
-            <div class="result-label">
-                <i class="fa-solid fa-id-card"></i>
-                كود الطالب
-            </div>
-            <div id="studentCode" class="result-value"></div>
-        </div>
-
-        <div class="result-row">
-            <div class="result-label">
-                <i class="fa-solid fa-user"></i>
-                اسم الطالب
-            </div>
-            <div id="studentName" class="result-value"></div>
-        </div>
-
-        <div class="result-row">
-            <div class="result-label">
-                <i class="fa-solid fa-school"></i>
-                الصف الدراسي
-            </div>
-            <div id="studentGrade" class="result-value"></div>
-        </div>
-
-        <div class="result-row">
-            <div class="result-label">
-                <i class="fa-solid fa-users"></i>
-                المجموعة
-            </div>
-            <div id="studentGroup" class="result-value"></div>
-        </div>
-
-        <div class="result-row">
-            <div class="result-label">
-                <i class="fa-solid fa-calendar-days"></i>
-                موعد الحصة الأولى
-            </div>
-            <div id="studentStart" class="result-value"></div>
-        </div>
-
-        <div class="result-row">
-            <div class="result-label">
-                <i class="fa-solid fa-clock"></i>
-                التوقيت
-            </div>
-            <div id="studentTime" class="result-value"></div>
-        </div>
-
-        <div class="result-row">
-            <div class="result-label">
-                <i class="fa-brands fa-whatsapp"></i>
-                واتساب الطالب
-            </div>
-            <div id="studentWhatsapp" class="result-value"></div>
-        </div>
-
-        <div class="result-row">
-            <div class="result-label">
-                <i class="fa-brands fa-whatsapp"></i>
-                واتساب ولي الأمر
-            </div>
-            <div id="parentWhatsapp" class="result-value"></div>
-        </div>
-
-    </div>
-<!-- بطاقة الحضور -->
-
-<div id="attendanceResult" class="result-card hidden">
+<div id="result" class="result-card hidden">
 
     <h2 class="result-title">
-        <i class="fa-solid fa-calendar-check"></i>
-        بيانات الحضور
+        <i class="fa-solid fa-user-graduate"></i>
+        بيانات الطالب
     </h2>
+
+    <div class="result-row">
+        <div class="result-label">
+            <i class="fa-solid fa-id-card"></i>
+            كود الطالب
+        </div>
+        <div id="studentCode" class="result-value"></div>
+    </div>
 
     <div class="result-row">
         <div class="result-label">
             <i class="fa-solid fa-user"></i>
             اسم الطالب
         </div>
-        <div id="attendanceName" class="result-value"></div>
+        <div id="studentName" class="result-value"></div>
     </div>
 
     <div class="result-row">
         <div class="result-label">
-            <i class="fa-solid fa-check"></i>
-            عدد مرات الحضور
+            <i class="fa-solid fa-school"></i>
+            الصف الدراسي
         </div>
-        <div id="attendanceCount" class="result-value"></div>
+        <div id="studentGrade" class="result-value"></div>
     </div>
 
     <div class="result-row">
         <div class="result-label">
-            <i class="fa-solid fa-xmark"></i>
-            عدد مرات الغياب
+            <i class="fa-solid fa-users"></i>
+            المجموعة
         </div>
-        <div id="absenceCount" class="result-value"></div>
+        <div id="studentGroup" class="result-value"></div>
+    </div>
+
+    <div class="result-row">
+        <div class="result-label">
+            <i class="fa-solid fa-calendar-days"></i>
+            موعد الحصة الأولى
+        </div>
+        <div id="studentStart" class="result-value"></div>
     </div>
 
     <div class="result-row">
         <div class="result-label">
             <i class="fa-solid fa-clock"></i>
-            آخر حضور
+            التوقيت
         </div>
-        <div id="lastAttendance" class="result-value"></div>
+        <div id="studentTime" class="result-value"></div>
     </div>
 
     <div class="result-row">
         <div class="result-label">
+            <i class="fa-brands fa-whatsapp"></i>
+            واتساب الطالب
+        </div>
+        <div id="studentWhatsapp" class="result-value"></div>
+    </div>
+
+    <div class="result-row">
+        <div class="result-label">
+            <i class="fa-brands fa-whatsapp"></i>
+            واتساب ولي الأمر
+        </div>
+        <div id="parentWhatsapp" class="result-value"></div>
+    </div>
+
+    <!-- زر عرض الحضور -->
+
+    <div style="text-align:center;margin-top:25px;">
+
+        <button
+            id="showAttendanceBtn"
+            class="search-btn attendance-btn"
+            style="display:none;">
+
+            <i class="fa-solid fa-calendar-check"></i>
+
+            عرض سجل الحضور
+
+        </button>
+
+    </div>
+
+</div>
+<!-- بطاقة الحضور -->
+
+<div id="attendanceResult" class="result-card hidden">
+
+    <h2 class="result-title">
+
+        <i class="fa-solid fa-calendar-check"></i>
+
+        سجل حضور الطالب
+
+    </h2>
+
+    <div class="result-row">
+
+        <div class="result-label">
+
+            <i class="fa-solid fa-user"></i>
+
+            اسم الطالب
+
+        </div>
+
+        <div id="attendanceName" class="result-value"></div>
+
+    </div>
+
+    <div class="result-row">
+
+        <div class="result-label">
+
+            <i class="fa-solid fa-check-circle"></i>
+
+            عدد مرات الحضور
+
+        </div>
+
+        <div id="attendanceCount" class="result-value"></div>
+
+    </div>
+
+    <div class="result-row">
+
+        <div class="result-label">
+
+            <i class="fa-solid fa-circle-xmark"></i>
+
+            عدد مرات الغياب
+
+        </div>
+
+        <div id="absenceCount" class="result-value"></div>
+
+    </div>
+
+    <div class="result-row">
+
+        <div class="result-label">
+
+            <i class="fa-solid fa-calendar-days"></i>
+
+            آخر حضور
+
+        </div>
+
+        <div id="lastAttendance" class="result-value"></div>
+
+    </div>
+
+    <div class="result-row">
+
+        <div class="result-label">
+
             <i class="fa-solid fa-chart-line"></i>
-            نسبة الحضور
+
+            نسبة الالتزام
+
         </div>
+
         <div id="attendanceRate" class="result-value"></div>
-    </div>
-
-</div>
-    <!-- لم يتم العثور -->
-
-    <div id="notFound" class="not-found hidden">
-
-        <i class="fa-solid fa-circle-xmark"></i>
-
-        لم يتم العثور على طالب بهذا الرقم
 
     </div>
 
-    <!-- الفوتر -->
+    <div style="text-align:center;margin-top:25px;">
 
-    <footer class="footer">
+        <button
+            id="backToStudentBtn"
+            class="search-btn">
 
-        <div class="footer-content">
+            <i class="fa-solid fa-arrow-right"></i>
 
-            <h3>
-                <i class="fa-solid fa-graduation-cap"></i>
-                أكاديمية السمان
-            </h3>
+            الرجوع إلى بيانات الطالب
 
-            <p>بوابة الاستعلام الإلكترونية</p>
+        </button>
 
-            <p>جميع الحقوق محفوظة © 2026</p>
-
- <p>تم التصميم والتطوير بواسطة مستر السمان</p>
-<a href="https://www.facebook.com/profile.php?id=100093795507056&locale=ar_AR"
-   target="_blank"
-   class="facebook-btn">
-
-    <i class="fa-brands fa-facebook-f"></i>
-
-    صفحة الأكاديمية على فيسبوك
-
-</a>
-
-        </div>
-
-    </footer>
+    </div>
 
 </div>
 
-<script src="script.js"></script>
+<!-- لم يتم العثور -->
 
+<div id="notFound" class="not-found hidden">
 
-</body>
+    <i class="fa-solid fa-circle-xmark"></i>
 
-</html>
+    لم يتم العثور على طالب بهذا الرقم
+
+</div>

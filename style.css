@@ -698,24 +698,75 @@ body{
     margin-left:10px;
 
 }
-/*=========================
-      زر الحضور
-=========================*/
+.attendance-btn-box{
+
+    margin-top:25px;
+
+}
 
 .attendance-btn{
 
-    margin-top:15px;
+    width:100%;
 
-    background:linear-gradient(135deg,#d4af37,#f4cf55);
+    height:60px;
 
-    color:#0d47a1;
+    border:none;
+
+    border-radius:16px;
+
+    background:linear-gradient(135deg,#0b8f4d,#17b66a);
+
+    color:#fff;
+
+    font-size:22px;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+    transition:.3s;
 
 }
 
 .attendance-btn:hover{
 
-    background:linear-gradient(135deg,#0d47a1,#1565c0);
+    transform:translateY(-2px);
+
+}
+.attendance-table{
+
+    width:100%;
+
+    border-collapse:collapse;
+
+    margin-top:20px;
+
+}
+
+.attendance-table th{
+
+    background:#0d47a1;
 
     color:#fff;
+
+    padding:15px;
+
+}
+
+.attendance-table td{
+
+    border:1px solid #ddd;
+
+    padding:14px;
+
+    text-align:center;
+
+    font-size:18px;
+
+}
+
+.attendance-table tr:nth-child(even){
+
+    background:#f7f9fc;
 
 }

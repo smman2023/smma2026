@@ -127,25 +127,30 @@
         </div>
 
         <div class="result-row">
-            <div class="result-label">
-                <i class="fa-brands fa-whatsapp"></i>
-                واتساب ولي الأمر
+    <div class="result-label">
+        <i class="fa-brands fa-whatsapp"></i>
+        واتساب ولي الأمر
+    </div>
+
+    <div id="parentWhatsapp" class="result-value"></div>
+</div>
+
 <div class="attendance-btn-box">
-
-    <button id="attendanceBtn" class="attendance-btn hidden">
-
+    <button type="button" id="attendanceBtn" class="attendance-btn hidden">
         <i class="fa-solid fa-calendar-check"></i>
-
         الاستعلام عن حضور الطالب
-
     </button>
+</div>
+
+<div class="attendance-btn-box">
+    <button type="button" id="homeworkBtn" class="attendance-btn hidden">
+        <i class="fa-solid fa-book"></i>
+        الاستعلام عن درجات الواجب
+    </button>
+</div>
 
 </div>
-            </div>
-            <div id="parentWhatsapp" class="result-value"></div>
-        </div>
-
-    </div>
+      
 <div id="attendanceCard" class="result-card hidden">
 
     <h2 class="result-title">
@@ -159,6 +164,25 @@
     <div id="attendanceContent"></div>
 
     <button id="backBtn" class="student-open-btn">
+
+        العودة إلى بيانات الطالب
+
+    </button>
+
+</div>
+<div id="homeworkCard" class="result-card hidden">
+
+    <h2 class="result-title">
+
+        <i class="fa-solid fa-book"></i>
+
+        درجات الواجب
+
+    </h2>
+
+    <div id="homeworkContent"></div>
+
+    <button id="backHomeworkBtn" class="student-open-btn">
 
         العودة إلى بيانات الطالب
 

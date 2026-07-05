@@ -4,6 +4,7 @@
 
 const API_URL = "https://script.google.com/macros/s/AKfycbxfO2j_rjDcv0lpsPiAoXeEDHogiF2OgrWUVFTNPrAQ22_zK1MMgRsFeWGea75SvvCR/exec";
 const ATTENDANCE_API = "https://script.google.com/macros/s/AKfycbxVoTCp_U39WL_p31kqdX7PKC3Kq4GSntIACwvd_GqEN1iX-aDe59lDzMipFxOG2bqV/exec";
+const HOMEWORK_API = "https://script.google.com/macros/s/AKfycbyP2IHMZ3Shl4vTKzVZspbyYR-aRdOMRHcPvRFC_LrqRabtGk1O_qJw3UjCmTYOV5ABjA/exec";
 let students = [];
 
 
@@ -22,8 +23,16 @@ const container = document.querySelector(".container");
 const attendanceBtn = document.getElementById("attendanceBtn");
 
 const attendanceCard = document.getElementById("attendanceCard");
+const attendanceContent = document.getElementById("attendanceContent");
 
 const backBtn = document.getElementById("backBtn");
+const homeworkBtn = document.getElementById("homeworkBtn");
+
+const homeworkCard = document.getElementById("homeworkCard");
+
+const homeworkContent = document.getElementById("homeworkContent");
+
+const backHomeworkBtn = document.getElementById("backHomeworkBtn");
 
 let currentStudent = null;
 //=========================================
@@ -76,12 +85,22 @@ phoneInput.addEventListener("keypress",function(e){
     }
 
 });
-attendanceBtn.addEventListener("click",showAttendance);
+attendanceBtn.addEventListener("click", showAttendance);
 
-backBtn.addEventListener("click",function(){
+homeworkBtn.addEventListener("click", showHomework);
+
+backBtn.addEventListener("click", function () {
 
     attendanceCard.classList.add("hidden");
+    homeworkCard.classList.add("hidden");
+    result.classList.remove("hidden");
 
+});
+
+backHomeworkBtn.addEventListener("click", function () {
+
+    homeworkCard.classList.add("hidden");
+    attendanceCard.classList.add("hidden");
     result.classList.remove("hidden");
 
 });
@@ -108,6 +127,11 @@ currentStudent = student;
 attendanceCard.classList.add("hidden");
 
     attendanceBtn.classList.remove("hidden");
+homeworkBtn.classList.remove("hidden");
+
+attendanceCard.classList.add("hidden");
+
+homeworkCard.classList.add("hidden");
     notFound.classList.add("hidden");
 
     let list=document.getElementById("studentList");
@@ -247,8 +271,12 @@ function displayStudentByCode(code){
 function showStudentList(list){
 
     result.classList.add("hidden");
-    notFound.classList.add("hidden");
 
+attendanceCard.classList.add("hidden");
+
+homeworkCard.classList.add("hidden");
+
+notFound.classList.add("hidden");
     let old=document.getElementById("studentList");
 
     if(old){
@@ -360,67 +388,42 @@ function searchStudent(){
     );
 
     // لا يوجد طالب
-    if(matchedStudents.length===0){
+if (matchedStudents.length === 0) {
 
+    attendanceCard.classList.add("hidden");
+    homeworkCard.classList.add("hidden");
+    result.classList.add("hidden");
     notFound.classList.remove("hidden");
 
     phoneInput.value = "";
 
     return;
-
 }
-    // طالب واحد
-    if(matchedStudents.length===1){
+
+// طالب واحد
+if (matchedStudents.length === 1) {
 
     displayStudent(matchedStudents[0]);
 
     phoneInput.value = "";
 
     return;
-
 }
 
-    // أكثر من طالب
-    showStudentList(matchedStudents);
+// أكثر من طالب
+showStudentList(matchedStudents);
 
 phoneInput.value = "";
-
 }
-function searchStudent(){
 
-    // الكود الموجود عندك
-
-}
 
 // الصق هنا مباشرة
 
-function showAttendance(){
 
-    result.classList.add("hidden");
-
-    attendanceCard.classList.remove("hidden");
-
-    attendanceContent.innerHTML="جارى تحميل سجل الحضور...";
-
-}
-attendanceBtn.addEventListener("click", function(){
-
-    result.classList.add("hidden");
-
-    attendanceCard.classList.remove("hidden");
-
-});
-
-backBtn.addEventListener("click", function(){
-
-    attendanceCard.classList.add("hidden");
-
-    result.classList.remove("hidden");
-
-});
 async function showAttendance(){
 
     result.classList.add("hidden");
+homeworkCard.classList.add("hidden");
 
     attendanceCard.classList.remove("hidden");
 
@@ -483,6 +486,68 @@ async function showAttendance(){
     catch(error){
 
         attendanceContent.innerHTML="<h3>حدث خطأ أثناء تحميل بيانات الحضور</h3>";
+
+    }
+
+}
+
+
+async function showHomework(){
+
+    result.classList.add("hidden");
+
+    attendanceCard.classList.add("hidden");
+
+    homeworkCard.classList.remove("hidden");
+
+    homeworkContent.innerHTML="جارى تحميل درجات الواجب...";
+
+    try{
+
+        const response = await fetch(HOMEWORK_API + "?code=" + currentStudent.code);
+
+        const data = await response.json();
+
+        if(data.length===0){
+
+            homeworkContent.innerHTML="<h3>لا توجد درجات لهذا الطالب</h3>";
+
+            return;
+
+        }
+
+        let html=`
+        <table class="attendance-table">
+            <tr>
+                <th>الواجب</th>
+                <th>التاريخ</th>
+                <th>الدرجة</th>
+                <th>من</th>
+            </tr>
+        `;
+
+        data.forEach(item=>{
+
+            html+=`
+            <tr>
+                <td>${item.homework}</td>
+                <td>${item.date}</td>
+                <td>${item.grade}</td>
+                <td>${item.total}</td>
+            </tr>
+            `;
+
+        });
+
+        html+="</table>";
+
+        homeworkContent.innerHTML=html;
+
+    }
+
+    catch(error){
+
+        homeworkContent.innerHTML="<h3>حدث خطأ أثناء تحميل درجات الواجب</h3>";
 
     }
 
